@@ -10,9 +10,9 @@ from gpaw.mpi import size, rank
 from gpaw import use_mic
 
 # no. of replicates in each dimension (increase to scale up the system)
-x = 2
-y = 1
-z = 1
+x = 4
+y = 4
+z = 4
 # other parameters
 h = 0.22
 kpt = 1
