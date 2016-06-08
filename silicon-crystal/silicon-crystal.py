@@ -7,7 +7,10 @@ from ase.lattice import bulk
 from gpaw import GPAW, Mixer, ConvergenceError
 from gpaw.eigensolvers.rmm_diis import RMM_DIIS
 from gpaw.mpi import size, rank
-from gpaw import use_mic
+try:
+    from gpaw import use_mic
+except ImportError:
+    use_mic = False
 
 # no. of replicates in each dimension (increase to scale up the system)
 x = 4
@@ -21,19 +24,16 @@ maxiter = 6
 conv = {'eigenstates' : 1e-4, 'density' : 1e-2, 'energy' : 1e-3}
 
 # output benchmark parameters
-if use_mic:
-    mic_yesno = 'YES'
-else:
-    mic_yesno = 'NO'
-print("#"*60)
-print("GPAW benchmark: Silicon Crystal")
-print("  dimensions: x=%d, y=%d, z=%d" % (x, y, z))
-print("  grid spacing: h=%f" % h)
-print("  Brillouin-zone sampling: kpts=(%d,%d,%d)" % (kpt, kpt, kpt))
-print("  MPI task: %d out of %d" % (rank, size))
-print("  using MICs: " + mic_yesno)
-print("#"*60)
-print("")
+if rank == 0:
+    print("#"*60)
+    print("GPAW benchmark: Silicon Crystal")
+    print("  dimensions: x=%d, y=%d, z=%d" % (x, y, z))
+    print("  grid spacing: h=%f" % h)
+    print("  Brillouin-zone sampling: kpts=(%d,%d,%d)" % (kpt, kpt, kpt))
+    print("  MPI task: %d out of %d" % (rank, size))
+    print("  using MICs: " + repr(use_mic))
+    print("#"*60)
+    print("")
 
 # setup the system
 atoms = bulk('Si', cubic=True)

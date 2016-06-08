@@ -7,7 +7,10 @@ from ase.io import read
 from gpaw import GPAW, Mixer, ConvergenceError
 from gpaw.eigensolvers.rmm_diis import RMM_DIIS
 from gpaw.mpi import size, rank
-from gpaw import use_mic
+try:
+    from gpaw import use_mic
+except ImportError:
+    use_mic = False
 
 # run parameters
 h = 0.22
@@ -19,18 +22,15 @@ conv = {'eigenstates' : 1e-4, 'density' : 1e-2, 'energy' : 1e-3}
 input_coords = 'POSCAR'
 
 # output benchmark parameters
-if use_mic:
-    mic_yesno = 'YES'
-else:
-    mic_yesno = 'NO'
-print("#"*60)
-print("GPAW benchmark: Carbon Fullerenes on a Lead Surface")
-print("  grid spacing: h=%f" % h)
-print("  Brillouin-zone sampling: kpts=(%d,%d,1)" % (kpt, kpt))
-print("  MPI task: %d out of %d" % (rank, size))
-print("  using MICs: " + mic_yesno)
-print("#"*60)
-print("")
+if rank == 0:
+    print("#"*60)
+    print("GPAW benchmark: Carbon Fullerenes on a Lead Surface")
+    print("  grid spacing: h=%f" % h)
+    print("  Brillouin-zone sampling: kpts=(%d,%d,1)" % (kpt, kpt))
+    print("  MPI task: %d out of %d" % (rank, size))
+    print("  using MICs: " + repr(use_mic))
+    print("#"*60)
+    print("")
 
 # setup the system
 atoms = read(input_coords)

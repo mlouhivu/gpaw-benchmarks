@@ -8,7 +8,10 @@ from gpaw import GPAW, Mixer, PoissonSolver, ConvergenceError
 from gpaw.eigensolvers.rmm_diis import RMM_DIIS
 from gpaw.mpi import size, rank
 from gpaw.test import equal
-from gpaw import use_mic
+try:
+    from gpaw import use_mic
+except ImportError:
+    use_mic = False
 
 # dimensions of the nanotube
 n = 6
@@ -20,17 +23,14 @@ maxiter = 6
 conv = {'eigenstates' : 1e-4, 'density' : 1e-2, 'energy' : 1e-3}
 
 # output benchmark parameters
-if use_mic:
-    mic_yesno = 'YES'
-else:
-    mic_yesno = 'NO'
-print("#"*60)
-print("GPAW benchmark: Carbon Nanotube")
-print("  nanotube dimensions: n=%d, m=%d, length=%d" % (n, m, length))
-print("  MPI task: %d out of %d" % (rank, size))
-print("  using MICs: " + mic_yesno)
-print("#"*60)
-print("")
+if rank == 0:
+    print("#"*60)
+    print("GPAW benchmark: Carbon Nanotube")
+    print("  nanotube dimensions: n=%d, m=%d, length=%d" % (n, m, length))
+    print("  MPI task: %d out of %d" % (rank, size))
+    print("  using MICs: " + repr(use_mic))
+    print("#"*60)
+    print("")
 
 # setup the system
 tube = nanotube(n, m, length)
