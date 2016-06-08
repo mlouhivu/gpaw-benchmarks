@@ -17,7 +17,7 @@ z = 4
 h = 0.22
 kpt = 1
 txt = 'output.txt'
-maxiter = 15
+maxiter = 6
 conv = {'eigenstates' : 1e-4, 'density' : 1e-2, 'energy' : 1e-3}
 
 # output benchmark parameters
