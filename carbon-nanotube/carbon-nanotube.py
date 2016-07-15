@@ -19,7 +19,7 @@ m = 6
 length = 10
 # other parameters
 txt = 'output.txt'
-maxiter = 6
+maxiter = 16
 conv = {'eigenstates' : 1e-4, 'density' : 1e-2, 'energy' : 1e-3}
 
 # output benchmark parameters
@@ -28,23 +28,23 @@ if rank == 0:
     print("GPAW benchmark: Carbon Nanotube")
     print("  nanotube dimensions: n=%d, m=%d, length=%d" % (n, m, length))
     print("  MPI task: %d out of %d" % (rank, size))
-    print("  using MICs: " + repr(use_mic))
+    print("  using MICs: " + str(use_mic))
     print("#"*60)
     print("")
 
 # setup the system
-tube = nanotube(n, m, length)
+atoms = nanotube(n, m, length)
 calc = GPAW(h=0.2, nbands=-60, width=0.1,
             poissonsolver=PoissonSolver(eps=1e-12),
             eigensolver=RMM_DIIS(keep_htpsit=True),
             maxiter=maxiter,
             mixer=Mixer(0.1, 5, 50),
             convergence=conv, txt=txt)
-tube.set_calculator(calc)
+atoms.set_calculator(calc)
 
 # execute the run
 try:
-    e = tube.get_potential_energy()
+    atoms.get_potential_energy()
 except ConvergenceError:
     pass
 
