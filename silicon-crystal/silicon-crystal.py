@@ -18,7 +18,7 @@ y = 4
 z = 4
 # other parameters
 h = 0.22
-kpt = 1
+kpts = (1,1,1)
 txt = 'output.txt'
 maxiter = 6
 conv = {'eigenstates' : 1e-4, 'density' : 1e-2, 'energy' : 1e-3}
@@ -29,9 +29,9 @@ if rank == 0:
     print("GPAW benchmark: Silicon Crystal")
     print("  dimensions: x=%d, y=%d, z=%d" % (x, y, z))
     print("  grid spacing: h=%f" % h)
-    print("  Brillouin-zone sampling: kpts=(%d,%d,%d)" % (kpt, kpt, kpt))
+    print("  Brillouin-zone sampling: kpts=" + str(kpts))
     print("  MPI task: %d out of %d" % (rank, size))
-    print("  using MICs: " + repr(use_mic))
+    print("  using MICs: " + str(use_mic))
     print("#"*60)
     print("")
 
@@ -39,9 +39,10 @@ if rank == 0:
 atoms = bulk('Si', cubic=True)
 atoms = atoms.repeat((x, y, z))
 calc = GPAW(h=h, nbands=-20, width=0.2,
-            kpts=(kpt,kpt,kpt), xc='PBE',
+            kpts=kpts, xc='PBE',
             maxiter=maxiter,
             txt=txt, eigensolver=RMM_DIIS(niter=2),
+            parallel={'sl_auto': True},
             mixer=Mixer(0.1, 5, 100),
            )
 atoms.set_calculator(calc)
