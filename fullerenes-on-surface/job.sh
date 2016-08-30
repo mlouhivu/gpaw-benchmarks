@@ -35,5 +35,5 @@ export I_MPI_DAPL_PROVIDER=ofa-v2-mlx4_0-1
 # export PYMIC_DEBUG=5
 # export PYMIC_TRACE=1
 
-GPAW_PPN=$ppn GPAW_OFFLOAD=1 mpirun -np $ncores -bootstrap slurm ./affinity-wrapper.sh $ppn gpaw-python fullerenes-on-surface.py
+GPAW_PPN=$ppn GPAW_OFFLOAD=1 mpirun -np $ncores -bootstrap slurm ./affinity-wrapper.sh $ppn gpaw-python input.py
 
