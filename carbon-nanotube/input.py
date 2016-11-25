@@ -3,11 +3,13 @@
 ###
 
 from __future__ import print_function
-from ase.structure import nanotube
+try:
+    from ase.build import nanotube
+except ImportError:
+    from ase.structure import nanotube
 from gpaw import GPAW, Mixer, PoissonSolver, ConvergenceError
 from gpaw.eigensolvers.rmm_diis import RMM_DIIS
 from gpaw.mpi import size, rank
-from gpaw.test import equal
 try:
     from gpaw import use_mic
 except ImportError:
