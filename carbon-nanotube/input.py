@@ -8,7 +8,6 @@ try:
 except ImportError:
     from ase.structure import nanotube
 from gpaw import GPAW, Mixer, PoissonSolver, ConvergenceError
-from gpaw.eigensolvers.rmm_diis import RMM_DIIS
 from gpaw.mpi import size, rank
 try:
     from gpaw import use_mic
@@ -48,7 +47,7 @@ args = {'h': 0.2,
         'width': 0.1,
         'mixer': Mixer(0.1, 5, 50),
         'poissonsolver': PoissonSolver(eps=1e-12),
-        'eigensolver': RMM_DIIS(keep_htpsit=True),
+        'eigensolver': 'rmm-diis',
         'maxiter': maxiter,
         'convergence': conv,
         'txt': txt}
