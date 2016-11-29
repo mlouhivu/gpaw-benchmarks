@@ -35,7 +35,7 @@ if rank == 0:
     print("#"*60)
     print("GPAW benchmark: Carbon Nanotube")
     print("  nanotube dimensions: n=%d, m=%d, length=%d" % (n, m, length))
-    print("  MPI tasks: %d out of %d" % (rank, size))
+    print("  MPI tasks: %d" % size)
     print("  using CUDA: " + str(use_cuda))
     print("  using MICs: " + str(use_mic))
     print("#"*60)

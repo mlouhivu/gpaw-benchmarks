@@ -31,7 +31,7 @@ if rank == 0:
     print("  dimensions: x=%d, y=%d, z=%d" % (x, y, z))
     print("  grid spacing: h=%f" % h)
     print("  Brillouin-zone sampling: kpts=" + str(kpts))
-    print("  MPI task: %d out of %d" % (rank, size))
+    print("  MPI tasks: %d" % size)
     print("  using MICs: " + str(use_mic))
     print("#"*60)
     print("")

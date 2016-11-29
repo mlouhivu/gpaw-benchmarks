@@ -27,7 +27,7 @@ if rank == 0:
     print("GPAW benchmark: Carbon Fullerenes on a Lead Surface")
     print("  grid spacing: h=%f" % h)
     print("  Brillouin-zone sampling: kpts=(%d,%d,1)" % (kpt, kpt))
-    print("  MPI task: %d out of %d" % (rank, size))
+    print("  MPI tasks: %d" % size)
     print("  using MICs: " + repr(use_mic))
     print("#"*60)
     print("")
@@ -39,7 +39,7 @@ calc = GPAW(h=h, nbands=-180, width=0.2,
             eigensolver=RMM_DIIS(niter=2),
             mixer=Mixer(0.1, 5, 100),
             parallel={'sl_default': (4,4,64)},
-            maxiter=maxiter, txt=txt 
+            maxiter=maxiter, txt=txt
            )
 atoms.set_calculator(calc)
 
