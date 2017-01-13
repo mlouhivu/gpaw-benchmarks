@@ -19,6 +19,7 @@ try:
     use_cuda = True
 except ImportError:
     use_cuda = False
+use_cpu = not (use_mic or use_cuda)
 
 # no. of replicates in each dimension (increase to scale up the system)
 x = 3
@@ -38,8 +39,9 @@ if rank == 0:
     print("  grid spacing: h=%f" % h)
     print("  Brillouin-zone sampling: kpts=" + str(kpts))
     print("  MPI tasks: %d" % size)
-    print("  using CUDA: " + str(use_cuda))
-    print("  using MICs: " + str(use_mic))
+    print("  using CUDA (GPGPU): " + str(use_cuda))
+    print("  using pyMIC (KNC) : " + str(use_mic))
+    print("  using CPU (or KNL): " + str(use_cpu))
     print("#"*60)
     print("")
 

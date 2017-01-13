@@ -18,6 +18,7 @@ try:
     use_cuda = True
 except ImportError:
     use_cuda = False
+use_cpu = not (use_mic or use_cuda)
 
 # dimensions of the nanotube
 n = 6
@@ -36,8 +37,9 @@ if rank == 0:
     print("GPAW benchmark: Carbon Nanotube")
     print("  nanotube dimensions: n=%d, m=%d, length=%d" % (n, m, length))
     print("  MPI tasks: %d" % size)
-    print("  using CUDA: " + str(use_cuda))
-    print("  using MICs: " + str(use_mic))
+    print("  using CUDA (GPGPU): " + str(use_cuda))
+    print("  using pyMIC (KNC) : " + str(use_mic))
+    print("  using CPU (or KNL): " + str(use_cpu))
     print("#"*60)
     print("")
 
