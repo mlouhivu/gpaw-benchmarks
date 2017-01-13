@@ -5,42 +5,63 @@
 from __future__ import print_function
 from ase.io import read
 from gpaw import GPAW, Mixer, ConvergenceError
-from gpaw.eigensolvers.rmm_diis import RMM_DIIS
 from gpaw.mpi import size, rank
+try:
+    from gpaw.eigensolvers.rmm_diis import RMM_DIIS
+except ImportError:
+    from gpaw.eigensolvers.rmmdiis import RMMDIIS as RMM_DIIS
 try:
     from gpaw import use_mic
 except ImportError:
     use_mic = False
+try:
+    from gpaw import use_cuda
+    use_cuda = True
+except ImportError:
+    use_cuda = False
 
-# run parameters
+# grid spacing (decrease to scale up the system)
 h = 0.22
-kpt = 2
+# no. of k-points in Brillouin-zone sampling grid (an increase will lift
+#   the upper scaling limit, but also consume more memory and time)
+kpts = (2,2,1)
 # other parameters
+input_coords = 'POSCAR'
 txt = 'output.txt'
 maxiter = 15
-conv = {'eigenstates' : 1e-4, 'density' : 1e-2, 'energy' : 1e-3}
-input_coords = 'POSCAR'
 
 # output benchmark parameters
 if rank == 0:
     print("#"*60)
     print("GPAW benchmark: Carbon Fullerenes on a Lead Surface")
     print("  grid spacing: h=%f" % h)
-    print("  Brillouin-zone sampling: kpts=(%d,%d,1)" % (kpt, kpt))
+    print("  Brillouin-zone sampling: kpts=" + str(kpts))
     print("  MPI tasks: %d" % size)
+    print("  using CUDA: " + str(use_cuda))
     print("  using MICs: " + repr(use_mic))
     print("#"*60)
     print("")
 
+# compatibility hack for the eigensolver
+rmm = RMM_DIIS()
+rmm.niter = 2
+# setup parameters
+args = {'h': h,
+        'nbands': -180,
+        'width': 0.2,
+        'kpts': kpts,
+        'xc': 'PBE',
+        'mixer': Mixer(0.1, 5, 100),
+        'eigensolver': rmm,
+        'maxiter': maxiter,
+        'parallel': {'sl_default': (4,4,64)},
+        'txt': txt}
+if use_cuda:
+    args['cuda'] = True
+
 # setup the system
 atoms = read(input_coords)
-calc = GPAW(h=h, nbands=-180, width=0.2,
-            kpts=(kpt,kpt,1), xc='PBE',
-            eigensolver=RMM_DIIS(niter=2),
-            mixer=Mixer(0.1, 5, 100),
-            parallel={'sl_default': (4,4,64)},
-            maxiter=maxiter, txt=txt
-           )
+calc = GPAW(**args)
 atoms.set_calculator(calc)
 
 # execute the run
