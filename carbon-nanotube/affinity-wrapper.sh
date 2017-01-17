@@ -1,20 +1,23 @@
 #!/bin/bash
+#################################################################
+# Wrapper script to launch GPAW jobs with correct affinities    #
+#   on Xeon Phi Knights Corner (KNC) MICs                       #
+#################################################################
+
+### MACHINE SPECS ###
+ndev=2        # number of MIC devices in the system
+tpc=4         # number of threads per physical core
+nphcores=61   # number of cores per MIC
+nphcores=$((nphcores - 1))  # one non-compute core on the MIC
+PYMIC_KMP_AFFINITY=compact  # thread affinity on the MIC device
+                            # (add ',verbose' to see placement)
+### MACHINE SPECS ###
 
 # get some information about the job
 ppn=$1
 shift
 rank=$PMI_RANK
 nmpi=$PMI_SIZE
-
-# number of devices in the system
-ndev=2
-
-# number of cores per device
-nphcores=61
-nphcores=$((nphcores - 1))
-
-# number of threads per physical core
-tpc=4
 
 # ranks per device
 rpd=$((ppn / ndev))
@@ -38,5 +41,7 @@ select="${ncores}c,${tpc}t,${offset}o"
 log="rank-`printf %03d $rank`.log"
 rm -f $log
 echo "host `hostname` rank `printf %03d $rank` - $select " |& tee -a $log
+export PYMIC_KMP_AFFINITY
+export PYMIC_KMP_PLACE_THREADS=$select
 env | grep PYMIC |& tee -a $log
-PYMIC_KMP_AFFINITY=compact,verbose PYMIC_KMP_PLACE_THREADS=$select $@ |& tee -a $log
+$@ |& tee -a $log
