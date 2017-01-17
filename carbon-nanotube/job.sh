@@ -9,21 +9,28 @@
 #SBATCH --time=120
 #SBATCH --gres=mic:2
 
-module purge
-module use $USERAPPL/modules
+# setup run environment (e.g. load some modules)
+#source /path/to/load.sh
+module load gpaw-mic
 
-module load intel/15.0.2 mkl/11.2.2 intelmpi/5.0.2
-module load ase/svn gpaw-setups/0.9.11271
-module load libxc python/2.7.10-icc pymic gpaw-mic
-
-(( ncores = SLURM_NNODES * 12 ))
+# no. of MPI tasks per node
 ppn=12
-
+# no. of MPI tasks in total
+(( ncores = SLURM_NNODES * ppn ))
+# no. of threads (i.e. no threading)
 export OMP_NUM_THREADS=1
 
+# add any system specific configs
 unset I_MPI_PMI_LIBRARY
 export I_MPI_FABRICS=shm:dapl
 export I_MPI_DAPL_PROVIDER=ofa-v2-mlx4_0-1
 
-GPAW_PPN=$ppn GPAW_OFFLOAD=1 mpirun -np $ncores -bootstrap slurm ./affinity-wrapper.sh $ppn gpaw-python input.py
+# bootstrap if in SLURM
+bootstrap='-bootstrap slurm'
+
+# if needed, change to working directory first (e.g. in PBS)
+#cd $PBS_O_WORKDIR
+
+# launch GPAW
+GPAW_PPN=$ppn GPAW_OFFLOAD=1 mpirun -np $ncores $bootstrap ./affinity-wrapper.sh $ppn gpaw-python input.py
 
