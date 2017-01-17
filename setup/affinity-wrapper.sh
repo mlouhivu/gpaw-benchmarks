@@ -3,39 +3,32 @@
 # Wrapper script to launch GPAW jobs with correct affinities    #
 #   on Xeon Phi Knights Corner (KNC) MICs                       #
 #################################################################
+# Uses following environment variables:
+#   HOST_PE    -- no. of host CPUs
+#   HOST_CORES -- no. of CPU cores in a processor
+#   MIC_PE     -- no. of MIC cards
+#   MIC_CORES  -- no. of MIC cores in a card (N-1 used for compute)
+#   MIC_TPC    -- no. of threads per MIC core
 
-### MACHINE SPECS ###
-ndev=2        # number of MIC devices in the system
-tpc=4         # number of threads per physical core
-nphcores=61   # number of cores per MIC
-nphcores=$((nphcores - 1))  # one non-compute core on the MIC
-PYMIC_KMP_AFFINITY=compact  # thread affinity on the MIC device
-                            # (add ',verbose' to see placement)
-### MACHINE SPECS ###
+# default affinity on the MIC (add ',verbose' to see placement)
+[[ ${PYMIC_KMP_AFFINITY:+x} ]] || PYMIC_KMP_AFFINITY=compact
 
-# get some information about the job
-ppn=$1
-shift
-rank=$PMI_RANK
+# MPI job size and current rank
 nmpi=$PMI_SIZE
+rank=$PMI_RANK
 
-# ranks per device
-rpd=$((ppn / ndev))
-if [ "$rpd" == "0" ]; then
-    rpd=1
+# no. of MPI tasks per MIC card
+tasks=$(( HOST_PE * HOST_CORES / MIC_PE ))
+if [ "$tasks" == "0" ]; then
+    tasks=1
 fi
-
-# physical cores per device
-ncores=$((nphcores / rpd))
-
-# partition number of the current rank on its device
-partition=$((rank % rpd))
-
-# offset for the current rank
-offset=$((ncores * partition))
+# no. of MIC cores per MPI task
+cores=$(( (MIC_CORES - 1) / tasks ))
+# offset for the current MPI rank
+offset=$(( cores * (rank % tasks) ))
 
 # build core selection string
-select="${ncores}c,${tpc}t,${offset}o"
+select="${cores}c,${MIC_TPC}t,${offset}o"
 
 # fire up the actual run
 log="rank-`printf %03d $rank`.log"
