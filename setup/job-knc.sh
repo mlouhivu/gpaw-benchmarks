@@ -1,8 +1,8 @@
 #!/bin/bash
 #SBATCH -J knc-test
 #SBATCH -p mic
-#SBATCH -N 8
-#SBATCH -n 96
+#SBATCH -N 2
+#SBATCH -n 24
 #SBATCH --ntasks-per-node=12
 #SBATCH --cpus-per-task=1
 #SBATCH --mem=32000
