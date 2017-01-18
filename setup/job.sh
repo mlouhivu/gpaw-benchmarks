@@ -20,7 +20,7 @@ source specs.taito
 # no. of CPU cores per node
 ppn=$(( HOST_PE * HOST_CORES ))
 # no. of CPU cores in total
-cores=$(( NODES * PPN ))
+cores=$(( NODES * ppn ))
 
 # no. of threads (i.e. no threading)
 export OMP_NUM_THREADS=1
