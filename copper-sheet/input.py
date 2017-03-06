@@ -46,7 +46,10 @@ if rank == 0:
     print("")
 
 # compatibility hack for the eigensolver
-rmm = RMM_DIIS()
+if use_cuda:
+    rmm = RMM_DIIS(cuda=True)
+else:
+    rmm = RMM_DIIS()
 rmm.niter = 2
 # setup parameters
 args = {'h': h,
