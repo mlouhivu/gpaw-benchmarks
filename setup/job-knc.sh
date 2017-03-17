@@ -13,9 +13,9 @@
 #cd $PBS_O_WORKDIR
 
 # read machine specific settings (e.g. hardware topology)
-#   (see specs.taito for a SLURM example
+#   (see specs.taito-mic for a SLURM example
 #    and specs.salomon for a PBS example)
-source specs.taito
+source specs.taito-mic
 
 # no. of CPU cores per node
 ppn=$(( HOST_PE * HOST_CORES ))
