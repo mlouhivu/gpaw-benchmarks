@@ -2,6 +2,11 @@
 #   taito.csc.fi (KNC partition)
 #
 
+# Which queueing system?
+#   'slurm' -- SLURM
+#   'pbs'   -- Portable Batch System (PBS)
+export QSYSTEM='slurm'
+
 # Setup run environment (e.g. load some modules)
 #  module load gpaw
 #  source /path/to/load.sh

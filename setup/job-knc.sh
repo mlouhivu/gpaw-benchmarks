@@ -25,7 +25,7 @@ cores=$(( NODES * ppn ))
 # no. of threads (i.e. no threading)
 export OMP_NUM_THREADS=1
 # bootstrap if in SLURM
-bootstrap='-bootstrap slurm'
+[[ "$QSYSTEM" == "slurm" ]] && bootstrap='-bootstrap slurm'
 
 # launch GPAW
 GPAW_PPN=$ppn GPAW_OFFLOAD=1 mpirun -np $cores $bootstrap ./affinity-wrapper.sh gpaw-python input.py
