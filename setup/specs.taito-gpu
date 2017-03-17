@@ -1,0 +1,26 @@
+# MACHINE SPECIFICATION FOR
+#   taito.csc.fi (GPGPU partition)
+#
+
+# Which queueing system?
+#   'slurm' -- SLURM
+#   'pbs'   -- Portable Batch System (PBS)
+export QSYSTEM='slurm'
+
+# Setup run environment (e.g. load some modules)
+#  module load gpaw
+#  source /path/to/load.sh
+module load gpaw-cuda
+
+# Job size
+export NODES=$SLURM_NNODES
+
+# Hardware definition
+export HOST_PE=2     # no. of host CPUs
+export GPU_PE=4      # no. of GPGPU cards (in K80 nodes)
+#export GPU_PE=2      # no. of GPGPU cards (in K40 nodes)
+
+# MPI environment
+export I_MPI_PIN_DOMAIN=socket
+export I_MPI_PIN_ORDER=scatter
+
