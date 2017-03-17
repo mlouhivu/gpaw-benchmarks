@@ -8,7 +8,7 @@ theory (DFT) program for ab initio electronic structure calculations.
 Copy input files to your work directory and run GPAW on the `input.py` script,
 e.g.
 ```
-git clone https://github.com/mlouhivu/gpaw-benchmarks
+git clone -b prace https://github.com/mlouhivu/gpaw-benchmarks
 cp -r gpaw-benchmarks/carbon-nanotube $WRKDIR/
 cd $WRKDIR/carbon-nanotube
 mpirun -np 256 gpaw-python input.py
