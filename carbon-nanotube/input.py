@@ -8,6 +8,7 @@ try:
 except ImportError:
     from ase.structure import nanotube
 from gpaw import GPAW, Mixer, PoissonSolver, ConvergenceError
+from gpaw.occupations import FermiDirac
 from gpaw.mpi import size, rank
 try:
     from gpaw import use_mic
@@ -46,7 +47,7 @@ if rank == 0:
 # setup parameters
 args = {'h': 0.2,
         'nbands': -60,
-        'width': 0.1,
+        'occupations': FermiDirac(0.1),
         'mixer': Mixer(0.1, 5, 50),
         'poissonsolver': PoissonSolver(eps=1e-12),
         'eigensolver': 'rmm-diis',

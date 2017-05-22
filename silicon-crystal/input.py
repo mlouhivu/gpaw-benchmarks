@@ -5,6 +5,7 @@
 from __future__ import print_function
 from ase.lattice import bulk
 from gpaw import GPAW, Mixer, ConvergenceError
+from gpaw.occupations import FermiDirac
 from gpaw.mpi import size, rank
 try:
     from gpaw.eigensolvers.rmm_diis import RMM_DIIS
@@ -51,7 +52,7 @@ rmm.niter = 2
 # setup parameters
 args = {'h': h,
         'nbands': -20,
-        'width': 0.2,
+        'occupations': FermiDirac(0.2),
         'kpts': kpts,
         'xc': 'PBE',
         'mixer': Mixer(0.1, 5, 100),
