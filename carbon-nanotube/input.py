@@ -61,6 +61,8 @@ except: pass
 
 # setup the system
 atoms = nanotube(n, m, length)
+atoms.center(vacuum=4.068, axis=0)
+atoms.center(vacuum=4.068, axis=1)
 calc = GPAW(**args)
 atoms.set_calculator(calc)
 
