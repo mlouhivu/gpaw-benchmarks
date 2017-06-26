@@ -1,0 +1,85 @@
+###
+### GPAW benchmark: Silicon Cluster
+###
+
+from __future__ import print_function
+from ase.build import bulk
+from gpaw import GPAW, Mixer, ConvergenceError
+from gpaw.occupations import FermiDirac
+from gpaw.mpi import size, rank
+import numpy
+try:
+    from gpaw.eigensolvers.rmm_diis import RMM_DIIS
+except ImportError:
+    from gpaw.eigensolvers.rmmdiis import RMMDIIS as RMM_DIIS
+try:
+    from gpaw import use_mic
+except ImportError:
+    use_mic = False
+try:
+    from gpaw import use_cuda
+    use_cuda = True
+except ImportError:
+    use_cuda = False
+use_cpu = not (use_mic or use_cuda)
+
+# radius of spherical cluster (increase to scale up the system)
+radius = 15
+# no. of replicates in each dimension
+x = int(2 * radius / 5.43) + 1
+y = int(2 * radius / 5.43) + 1
+z = int(2 * radius / 5.43) + 1
+# other parameters
+gpts = (20*x, 20*y, 20*z)
+txt = 'output.txt'
+maxiter = 24
+
+# output benchmark parameters
+if rank == 0:
+    print("#"*60)
+    print("GPAW benchmark: Silicon Cluster")
+    print("  radius: %.1f" % radius)
+    print("  grid size: %s" % str(gpts))
+    print("  MPI tasks: %d" % size)
+    print("  using CUDA (GPGPU): " + str(use_cuda))
+    print("  using pyMIC (KNC) : " + str(use_mic))
+    print("  using CPU (or KNL): " + str(use_cpu))
+    print("#"*60)
+    print("")
+
+# setup parameters
+args = {'gpts': gpts,
+        'nbands': 1520,
+        'occupations': FermiDirac(0.05),
+        'xc': 'LDA',
+        'mixer': Mixer(0.1, 5, 100),
+        'eigensolver': RMM_DIIS(blocksize=20),
+        'maxiter': maxiter,
+        'parallel': {'sl_auto': True},
+        'txt': txt}
+if use_cuda:
+    args['cuda'] = True
+
+# setup the system
+atoms = bulk('Si', cubic=True)
+atoms = atoms.repeat((x, y, z))
+
+# cut spherical cluster from bulk
+atoms.center(vacuum=0.0)
+center = numpy.diag(atoms.get_cell()) / 2.0
+mask = numpy.array([ numpy.linalg.norm(atom.position - center) < radius
+    for atom in atoms ])
+atoms = atoms[mask]
+# rotate the cluster in order to break symmetries
+atoms.rotate((0.1,0.2,0.3), 0.1)
+atoms.center(vacuum=5.0)
+
+calc = GPAW(**args)
+atoms.set_calculator(calc)
+
+# execute the run
+try:
+    atoms.get_potential_energy()
+except ConvergenceError:
+    pass
+
