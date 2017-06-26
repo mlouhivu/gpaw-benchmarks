@@ -33,6 +33,24 @@ z = int(2 * radius / 5.43) + 1
 gpts = (20*x, 20*y, 20*z)
 txt = 'output.txt'
 maxiter = 24
+bands_per_atom = 2.15
+
+# build a spherical cluster in vacuum
+atoms = bulk('Si', cubic=True)
+atoms = atoms.repeat((x, y, z))
+atoms.center(vacuum=0.0)
+center = numpy.diag(atoms.get_cell()) / 2.0
+mask = numpy.array([ numpy.linalg.norm(atom.position - center) < radius
+    for atom in atoms ])
+atoms = atoms[mask]
+atoms.rotate((0.1,0.2,0.3), 0.1) # break symmetry
+atoms.center(vacuum=5.0)
+
+# calculate the number of electronic bands
+nbands = int(len(atoms) * bands_per_atom)
+nbands -= nbands % 16
+while (nbands % 10):
+    nbands += 16
 
 # output benchmark parameters
 if rank == 0:
@@ -40,6 +58,7 @@ if rank == 0:
     print("GPAW benchmark: Silicon Cluster")
     print("  radius: %.1f" % radius)
     print("  grid size: %s" % str(gpts))
+    print("  electronic bands: %d" % nbands)
     print("  MPI tasks: %d" % size)
     print("  using CUDA (GPGPU): " + str(use_cuda))
     print("  using pyMIC (KNC) : " + str(use_mic))
@@ -49,7 +68,7 @@ if rank == 0:
 
 # setup parameters
 args = {'gpts': gpts,
-        'nbands': 1520,
+        'nbands': nbands,
         'occupations': FermiDirac(0.05),
         'xc': 'LDA',
         'mixer': Mixer(0.1, 5, 100),
@@ -60,20 +79,7 @@ args = {'gpts': gpts,
 if use_cuda:
     args['cuda'] = True
 
-# setup the system
-atoms = bulk('Si', cubic=True)
-atoms = atoms.repeat((x, y, z))
-
-# cut spherical cluster from bulk
-atoms.center(vacuum=0.0)
-center = numpy.diag(atoms.get_cell()) / 2.0
-mask = numpy.array([ numpy.linalg.norm(atom.position - center) < radius
-    for atom in atoms ])
-atoms = atoms[mask]
-# rotate the cluster in order to break symmetries
-atoms.rotate((0.1,0.2,0.3), 0.1)
-atoms.center(vacuum=5.0)
-
+# setup the calculator
 calc = GPAW(**args)
 atoms.set_calculator(calc)
 
