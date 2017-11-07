@@ -6,6 +6,7 @@ from __future__ import print_function
 from ase.build import bulk
 from gpaw import GPAW, Mixer, ConvergenceError
 from gpaw.occupations import FermiDirac
+from gpaw.utilities import h2gpts
 from gpaw.mpi import size, rank
 import numpy
 try:
@@ -30,7 +31,7 @@ x = int(2 * radius / 5.43) + 1
 y = int(2 * radius / 5.43) + 1
 z = int(2 * radius / 5.43) + 1
 # other parameters
-gpts = (20*x, 20*y, 20*z)
+h = 0.24
 txt = 'output.txt'
 maxiter = 24
 bands_per_atom = 2.15
@@ -52,12 +53,16 @@ nbands -= nbands % 16
 while (nbands % 10):
     nbands += 16
 
+# calculate the number of grid points
+gpts = h2gpts(h, atoms.get_cell(), idiv=16)
+
 # output benchmark parameters
 if rank == 0:
     print("#"*60)
     print("GPAW benchmark: Silicon Cluster")
     print("  radius: %.1f" % radius)
-    print("  grid size: %s" % str(gpts))
+    print("  grid spacing: %.3f" % h)
+    print("  grid points: %s" % str(gpts))
     print("  electronic bands: %d" % nbands)
     print("  MPI tasks: %d" % size)
     print("  using CUDA (GPGPU): " + str(use_cuda))
