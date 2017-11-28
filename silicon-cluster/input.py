@@ -3,11 +3,11 @@
 ###
 
 from __future__ import print_function
-from ase.build import bulk
+from gpaw.mpi import size, rank
 from gpaw import GPAW, Mixer, ConvergenceError
 from gpaw.occupations import FermiDirac
 from gpaw.utilities import h2gpts
-from gpaw.mpi import size, rank
+from ase.build import bulk
 import numpy
 try:
     from gpaw.eigensolvers.rmm_diis import RMM_DIIS

@@ -3,10 +3,10 @@
 ###
 
 from __future__ import print_function
-from ase.lattice import bulk
+from gpaw.mpi import size, rank
 from gpaw import GPAW, Mixer, ConvergenceError
 from gpaw.occupations import FermiDirac
-from gpaw.mpi import size, rank
+from ase.lattice import bulk
 try:
     from gpaw.eigensolvers.rmm_diis import RMM_DIIS
 except ImportError:
