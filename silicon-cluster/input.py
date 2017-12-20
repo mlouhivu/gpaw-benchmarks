@@ -31,7 +31,7 @@ x = int(2 * radius / 5.43) + 1
 y = int(2 * radius / 5.43) + 1
 z = int(2 * radius / 5.43) + 1
 # other parameters
-h = 0.24
+h = 0.18
 txt = 'output.txt'
 maxiter = 24
 bands_per_atom = 2.15
