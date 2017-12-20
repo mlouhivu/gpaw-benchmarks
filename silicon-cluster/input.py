@@ -35,6 +35,7 @@ h = 0.24
 txt = 'output.txt'
 maxiter = 24
 bands_per_atom = 2.15
+parallel = {'sl_default': (8,8,64)}
 
 # build a spherical cluster in vacuum
 atoms = bulk('Si', cubic=True)
@@ -47,11 +48,15 @@ atoms = atoms[mask]
 atoms.rotate((0.1,0.2,0.3), 0.1) # break symmetry
 atoms.center(vacuum=5.0)
 
+# setup band parallelisation
+bands_per_block = int(radius / 10.0 * 2**10)
+parallel['band'] = max(1, size // bands_per_block // 2 * 2)
+
 # calculate the number of electronic bands
 nbands = int(len(atoms) * bands_per_atom)
 nbands -= nbands % 16
-while (nbands % 10):
-    nbands += 16
+while (nbands % parallel['band']):
+    nbands += 2
 
 # calculate the number of grid points
 gpts = h2gpts(h, atoms.get_cell(), idiv=16)
@@ -79,7 +84,7 @@ args = {'gpts': gpts,
         'mixer': Mixer(0.1, 5, 100),
         'eigensolver': RMM_DIIS(blocksize=20),
         'maxiter': maxiter,
-        'parallel': {'sl_auto': True},
+        'parallel': parallel,
         'txt': txt}
 if use_cuda:
     args['cuda'] = True
