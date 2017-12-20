@@ -51,6 +51,8 @@ atoms.center(vacuum=5.0)
 # setup band parallelisation
 bands_per_block = int(radius / 10.0 * 2**10)
 parallel['band'] = max(1, size // bands_per_block // 2 * 2)
+while (size % parallel['band']):
+    parallel['band'] += 2
 
 # calculate the number of electronic bands
 nbands = int(len(atoms) * bands_per_atom)
