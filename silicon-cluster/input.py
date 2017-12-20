@@ -67,8 +67,6 @@ if rank == 0:
     print("GPAW benchmark: Silicon Cluster")
     print("  radius: %.1f" % radius)
     print("  grid spacing: %.3f" % h)
-    print("  grid points: %s" % str(gpts))
-    print("  electronic bands: %d" % nbands)
     print("  MPI tasks: %d" % size)
     print("  using CUDA (GPGPU): " + str(use_cuda))
     print("  using pyMIC (KNC) : " + str(use_mic))
