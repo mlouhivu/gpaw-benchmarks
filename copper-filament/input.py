@@ -23,14 +23,14 @@ except ImportError:
 use_cpu = not (use_mic or use_cuda)
 
 # no. of replicates in each dimension (increase to scale up the system)
-x = 2
+x = 3
 y = 2
-z = 3
+z = 4
 # other parameters
 h = 0.22
 kpts = (1,1,8)
 txt = 'output.txt'
-maxiter = 6
+maxiter = 24
 parallel = {'sl_default': (2,2,64)}
 
 # output benchmark parameters
