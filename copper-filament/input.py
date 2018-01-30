@@ -31,7 +31,7 @@ h = 0.22
 kpts = (1,1,8)
 txt = 'output.txt'
 maxiter = 6
-parallel = {'sl_default': (8,8,64)}
+parallel = {'sl_default': (2,2,64)}
 
 # output benchmark parameters
 if rank == 0:
