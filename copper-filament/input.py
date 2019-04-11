@@ -3,9 +3,10 @@
 ###
 
 from __future__ import print_function
-from ase.lattice.cubic import FaceCenteredCubic
-from gpaw import GPAW, Mixer, ConvergenceError
 from gpaw.mpi import size, rank
+from gpaw import GPAW, Mixer, ConvergenceError
+from gpaw.occupations import FermiDirac
+from ase.lattice.cubic import FaceCenteredCubic
 try:
     from gpaw.eigensolvers.rmm_diis import RMM_DIIS
 except ImportError:
@@ -22,14 +23,15 @@ except ImportError:
 use_cpu = not (use_mic or use_cuda)
 
 # no. of replicates in each dimension (increase to scale up the system)
-x = 2
+x = 3
 y = 2
-z = 3
+z = 4
 # other parameters
 h = 0.22
 kpts = (1,1,8)
 txt = 'output.txt'
-maxiter = 6
+maxiter = 24
+parallel = {'sl_default': (2,2,64)}
 
 # output benchmark parameters
 if rank == 0:
@@ -51,13 +53,13 @@ rmm.niter = 2
 # setup parameters
 args = {'h': h,
         'nbands': -20,
-        'width': 0.2,
+        'occupations': FermiDirac(0.2),
         'kpts': kpts,
         'xc': 'PBE',
         'mixer': Mixer(0.1, 5, 100),
         'eigensolver': rmm,
         'maxiter': maxiter,
-        'parallel': {'sl_auto': True},
+        'parallel': parallel,
         'txt': txt}
 if use_cuda:
     args['cuda'] = True
