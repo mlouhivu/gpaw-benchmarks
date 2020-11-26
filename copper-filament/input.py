@@ -59,10 +59,12 @@ args = {'h': h,
         'mixer': Mixer(0.1, 5, 100),
         'eigensolver': rmm,
         'maxiter': maxiter,
-        'parallel': parallel,
         'txt': txt}
 if use_cuda:
     args['cuda'] = True
+try:
+    args['parallel'] = parallel
+except: pass
 
 # setup the system
 atoms = FaceCenteredCubic(directions=[[1,-1,0], [1,1,-2], [1,1,1]],
