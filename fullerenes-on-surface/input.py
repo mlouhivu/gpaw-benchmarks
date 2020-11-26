@@ -45,9 +45,6 @@ if rank == 0:
     print("#"*60)
     print("")
 
-# compatibility hack for the eigensolver
-rmm = RMM_DIIS()
-rmm.niter = 2
 # setup parameters
 args = {'h': h,
         'nbands': -180,
@@ -55,7 +52,7 @@ args = {'h': h,
         'kpts': kpts,
         'xc': 'PBE',
         'mixer': Mixer(0.1, 5, 100),
-        'eigensolver': rmm,
+        'eigensolver': 'rmm-diis',
         'maxiter': maxiter,
         'parallel': {'sl_default': (4,4,64)},
         'txt': txt}
