@@ -82,7 +82,7 @@ args = {'gpts': gpts,
         'occupations': FermiDirac(0.05),
         'xc': 'LDA',
         'mixer': Mixer(0.1, 5, 100),
-        'eigensolver': RMM_DIIS(blocksize=20),
+        'eigensolver': 'rmm-diis',
         'maxiter': maxiter,
         'parallel': parallel,
         'txt': txt}
