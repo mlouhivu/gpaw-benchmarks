@@ -31,6 +31,7 @@ kpts = (2,2,1)
 input_coords = 'POSCAR'
 txt = 'output.txt'
 maxiter = 15
+parallel = {'sl_default': (4,4,64)}
 
 # output benchmark parameters
 if rank == 0:
@@ -54,10 +55,13 @@ args = {'h': h,
         'mixer': Mixer(0.1, 5, 100),
         'eigensolver': 'rmm-diis',
         'maxiter': maxiter,
-        'parallel': {'sl_default': (4,4,64)},
+        'xc_thread': False,
         'txt': txt}
 if use_cuda:
-    args['cuda'] = True
+    args['gpu'] = {'cuda': True, 'hybrid_blas': False}
+try:
+    args['parallel'] = parallel
+except: pass
 
 # setup the system
 atoms = read(input_coords)

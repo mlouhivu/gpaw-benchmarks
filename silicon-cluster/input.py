@@ -84,10 +84,13 @@ args = {'gpts': gpts,
         'mixer': Mixer(0.1, 5, 100),
         'eigensolver': 'rmm-diis',
         'maxiter': maxiter,
-        'parallel': parallel,
+        'xc_thread': False,
         'txt': txt}
 if use_cuda:
-    args['cuda'] = True
+    args['gpu'] = {'cuda': True, 'hybrid_blas': True}
+try:
+    args['parallel'] = parallel
+except: pass
 
 # setup the calculator
 calc = GPAW(**args)

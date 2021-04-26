@@ -31,6 +31,7 @@ h = 0.22
 kpts = (2,2,1)
 txt = 'output.txt'
 maxiter = 6
+parallel = {'sl_auto': True}
 
 # output benchmark parameters
 if rank == 0:
@@ -46,9 +47,6 @@ if rank == 0:
     print("#"*60)
     print("")
 
-# compatibility hack for the eigensolver
-rmm = RMM_DIIS()
-rmm.niter = 2
 # setup parameters
 args = {'h': h,
         'nbands': -20,
@@ -56,12 +54,14 @@ args = {'h': h,
         'kpts': kpts,
         'xc': 'PBE',
         'mixer': Mixer(0.1, 5, 100),
-        'eigensolver': rmm,
+        'eigensolver': 'rmm-diis',
         'maxiter': maxiter,
-        'parallel': {'sl_auto': True},
         'txt': txt}
 if use_cuda:
-    args['cuda'] = True
+    args['gpu'] = {'cuda': True, 'hybrid_blas': True}
+try:
+    args['parallel'] = parallel
+except: pass
 
 # setup the system
 atoms = CenteredTetragonal(directions=[[1,-1,0], [1,1,-2], [1,1,1]],

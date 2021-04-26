@@ -47,7 +47,7 @@ if rank == 0:
     print("")
 
 # compatibility hack for the eigensolver
-rmm = RMM_DIIS()
+rmm = RMM_DIIS(cuda=True)
 rmm.niter = 2
 # setup parameters
 args = {'h': h,
@@ -58,9 +58,10 @@ args = {'h': h,
         'mixer': Mixer(0.1, 5, 100),
         'eigensolver': rmm,
         'maxiter': maxiter,
+        'xc_thread': False,
         'txt': txt}
 if use_cuda:
-    args['cuda'] = True
+    args['gpu'] = {'cuda': True, 'hybrid_blas': False}
 try:
     args['parallel'] = parallel
 except: pass
