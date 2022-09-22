@@ -13,8 +13,6 @@ cp -r gpaw-benchmarks/carbon-nanotube $WRKDIR/
 cd $WRKDIR/carbon-nanotube
 mpirun -np 256 gpaw-python input.py
 ```
-Example batch job scripts and other potentially useful examples are available
-in the `setup/` directory. See e.g. `setup/job-cpu.sh` to get started.
 
 The size of a benchmark system may optionally be scaled (to some extend) by
 modifying the run parameters in the GPAW input script (`input.py`).
