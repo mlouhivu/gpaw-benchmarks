@@ -51,6 +51,7 @@ args = {'h': h,
         'txt': txt}
 if use_cuda:
     args['gpu'] = gpu
+    args['xc_thread'] = False
 try:
     args['parallel'] = parallel
 except: pass
