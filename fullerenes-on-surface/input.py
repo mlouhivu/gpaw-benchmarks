@@ -7,10 +7,6 @@ from gpaw.mpi import size, rank
 from gpaw import GPAW, Mixer, ConvergenceError
 from gpaw.occupations import FermiDirac
 from ase.io import read
-try:
-    from gpaw.eigensolvers.rmm_diis import RMM_DIIS
-except ImportError:
-    from gpaw.eigensolvers.rmmdiis import RMMDIIS as RMM_DIIS
 
 # grid spacing (decrease to scale up the system)
 h = 0.22

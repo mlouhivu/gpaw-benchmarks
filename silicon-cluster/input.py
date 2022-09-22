@@ -9,10 +9,6 @@ from gpaw.occupations import FermiDirac
 from gpaw.utilities import h2gpts
 from ase.build import bulk
 import numpy
-try:
-    from gpaw.eigensolvers.rmm_diis import RMM_DIIS
-except ImportError:
-    from gpaw.eigensolvers.rmmdiis import RMMDIIS as RMM_DIIS
 
 # radius of spherical cluster (increase to scale up the system)
 radius = 15
