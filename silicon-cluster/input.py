@@ -14,15 +14,10 @@ try:
 except ImportError:
     from gpaw.eigensolvers.rmmdiis import RMMDIIS as RMM_DIIS
 try:
-    from gpaw import use_mic
-except ImportError:
-    use_mic = False
-try:
     from gpaw import use_cuda
     use_cuda = True
 except ImportError:
     use_cuda = False
-use_cpu = not (use_mic or use_cuda)
 
 # radius of spherical cluster (increase to scale up the system)
 radius = 15
@@ -70,9 +65,7 @@ if rank == 0:
     print("  radius: %.1f" % radius)
     print("  grid spacing: %.3f" % h)
     print("  MPI tasks: %d" % size)
-    print("  using CUDA (GPGPU): " + str(use_cuda))
-    print("  using pyMIC (KNC) : " + str(use_mic))
-    print("  using CPU (or KNL): " + str(use_cpu))
+    print("  using GPU: " + str(use_cuda))
     print("#"*60)
     print("")
 
