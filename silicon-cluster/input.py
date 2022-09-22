@@ -84,10 +84,10 @@ args = {'gpts': gpts,
         'mixer': Mixer(0.1, 5, 100),
         'eigensolver': 'rmm-diis',
         'maxiter': maxiter,
-        'xc_thread': False,
         'txt': txt}
 if use_cuda:
     args['gpu'] = {'cuda': True, 'hybrid_blas': True}
+    args['xc_thread'] = False
 try:
     args['parallel'] = parallel
 except: pass

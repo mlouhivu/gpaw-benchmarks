@@ -53,10 +53,10 @@ args = {'h': 0.2,
         'eigensolver': 'rmm-diis',
         'maxiter': maxiter,
         'convergence': conv,
-        'xc_thread': False,
         'txt': txt}
 if use_cuda:
     args['gpu'] = {'cuda': True, 'hybrid_blas': True}
+    args['xc_thread'] = False
 try:
     args['parallel'] = parallel
 except: pass
