@@ -7,10 +7,6 @@ from gpaw.mpi import size, rank
 from gpaw import GPAW, Mixer, ConvergenceError
 from gpaw.occupations import FermiDirac
 from ase.io import read
-try:
-    from gpaw.eigensolvers.rmm_diis import RMM_DIIS
-except ImportError:
-    from gpaw.eigensolvers.rmmdiis import RMMDIIS as RMM_DIIS
 
 # grid spacing (decrease to scale up the system)
 h = 0.22
@@ -42,9 +38,6 @@ if rank == 0:
     print("#"*60)
     print("")
 
-# compatibility hack for the eigensolver
-rmm = RMM_DIIS(cuda=True)
-rmm.niter = 2
 # setup parameters
 args = {'h': h,
         'nbands': -180,
@@ -52,7 +45,7 @@ args = {'h': h,
         'kpts': kpts,
         'xc': 'PBE',
         'mixer': Mixer(0.1, 5, 100),
-        'eigensolver': rmm,
+        'eigensolver': 'rmm-diis',
         'maxiter': maxiter,
         'txt': txt}
 if use_cuda:
