@@ -11,11 +11,6 @@ try:
     from gpaw.eigensolvers.rmm_diis import RMM_DIIS
 except ImportError:
     from gpaw.eigensolvers.rmmdiis import RMMDIIS as RMM_DIIS
-try:
-    from gpaw import use_cuda
-    use_cuda = True
-except ImportError:
-    use_cuda = False
 
 # no. of replicates in each dimension (increase to scale up the system)
 x = 3
@@ -27,6 +22,14 @@ kpts = (2,2,1)
 txt = 'output.txt'
 maxiter = 6
 parallel = {'sl_auto': True}
+# uncomment to use GPUs
+#gpu = {'cuda': True, 'hybrid_blas': False}
+
+# check which GPU backend (if any) is used
+if 'gpu' in locals():
+    use_cuda = gpu.get('cuda', False)
+else:
+    use_cuda = False
 
 # output benchmark parameters
 if rank == 0:
@@ -51,7 +54,7 @@ args = {'h': h,
         'maxiter': maxiter,
         'txt': txt}
 if use_cuda:
-    args['gpu'] = {'cuda': True, 'hybrid_blas': True}
+    args['gpu'] = gpu
 try:
     args['parallel'] = parallel
 except: pass

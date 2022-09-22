@@ -13,11 +13,6 @@ try:
     from gpaw.eigensolvers.rmm_diis import RMM_DIIS
 except ImportError:
     from gpaw.eigensolvers.rmmdiis import RMMDIIS as RMM_DIIS
-try:
-    from gpaw import use_cuda
-    use_cuda = True
-except ImportError:
-    use_cuda = False
 
 # radius of spherical cluster (increase to scale up the system)
 radius = 15
@@ -31,6 +26,14 @@ txt = 'output.txt'
 maxiter = 24
 bands_per_atom = 2.15
 parallel = {'sl_default': (8,8,64)}
+# uncomment to use GPUs
+#gpu = {'cuda': True, 'hybrid_blas': False}
+
+# check which GPU backend (if any) is used
+if 'gpu' in locals():
+    use_cuda = gpu.get('cuda', False)
+else:
+    use_cuda = False
 
 # build a spherical cluster in vacuum
 atoms = bulk('Si', cubic=True)
@@ -79,7 +82,7 @@ args = {'gpts': gpts,
         'maxiter': maxiter,
         'txt': txt}
 if use_cuda:
-    args['gpu'] = {'cuda': True, 'hybrid_blas': True}
+    args['gpu'] = gpu
     args['xc_thread'] = False
 try:
     args['parallel'] = parallel

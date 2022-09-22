@@ -10,11 +10,6 @@ try:
     from ase.build import nanotube
 except ImportError:
     from ase.structure import nanotube
-try:
-    from gpaw import use_cuda
-    use_cuda = True
-except ImportError:
-    use_cuda = False
 
 # dimensions of the nanotube
 n = 6
@@ -26,6 +21,14 @@ maxiter = 16
 conv = {'eigenstates' : 1e-4, 'density' : 1e-2, 'energy' : 1e-3}
 # uncomment to use ScaLAPACK
 #parallel = {'sl_auto': True}
+# uncomment to use GPUs
+#gpu = {'cuda': True, 'hybrid_blas': False}
+
+# check which GPU backend (if any) is used
+if 'gpu' in locals():
+    use_cuda = gpu.get('cuda', False)
+else:
+    use_cuda = False
 
 # output benchmark parameters
 if rank == 0:
@@ -48,7 +51,7 @@ args = {'h': 0.2,
         'convergence': conv,
         'txt': txt}
 if use_cuda:
-    args['gpu'] = {'cuda': True, 'hybrid_blas': True}
+    args['gpu'] = gpu
     args['xc_thread'] = False
 try:
     args['parallel'] = parallel
